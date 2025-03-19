@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Mobile responsiveness meta tag -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mo Salah Name Generator</title>
+  <style>
+    /* Global styling */
+    body {
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    header {
+      width: 100%;
+      background: #1e90ff;
+      padding: 20px 0;
+      text-align: center;
+      color: #fff;
+      font-size: 2em;
+    }
+
+    main {
+      flex: 1;
+      width: 90%;
+      max-width: 600px;
+      background: #fff;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+
+    button {
+      background: #1e90ff;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #007acc;
+    }
+
+    .spinner {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #1e90ff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #countdown,
+    #result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.1em;
+    }
+
+    #mohImage {
+      display: none;
+      width: 100%;
+      max-width: 300px;
+      margin: 20px auto;
+      border-radius: 8px;
+    }
+
+    /* Mobile friendly adjustments */
+    @media (max-width: 600px) {
+      header {
+        font-size: 1.5em;
+        padding: 15px 0;
+      }
+      main {
+        width: 95%;
+        padding: 15px;
+      }
+      button {
+        padding: 10px;
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>Mo Salah Name Generator</header>
+  <main>
+    <p>Enter your first name:</p>
+    <div class="input-group">
+      <input type="text" id="firstName" placeholder="Your first name">
+    </div>
+    <button id="generateBtn">Generate Name</button>
+
+    <div id="spinner" style="display:none;">
+      <div class="spinner"></div>
+    </div>
+    <div id="countdown"></div>
+    <div id="result"></div>
+    <!-- Placeholder image for a Mo Salah lookalike -->
+    <img id="mohImage" src="mosalah.jpg" alt="Mo Salah Lookalike">
+  </main>
+
+  <script>
+    // Fixed surname for the Mo Salah name.
+    const fixedSurname = "Salah";
+
+    // Array of Mo Salah "Chuck Norris style" facts.
+const facts = [
+  "When Mo Salah runs, the stadium trembles.",
+  "Mo Salah doesn't dribble—the ball follows him out of respect.",
+  "Defenders don't chase him; they simply retire.",
+  "When he scores, even the goalposts applaud.",
+  "Mo Salah's free kicks bend the laws of physics.",
+  "Referees adjust the match clock to his pace.",
+  "The pitch changes its texture when Mo Salah touches it.",
+  "Mo Salah once outran his own shadow.",
+  "Opponents check their calendars before facing him.",
+  "Mo Salah's goals are etched in the annals of legend.",
+  "Mo Salah can score from the halfway line... with his eyes closed.",
+  "Even gravity takes a break when Mo Salah is around.",
+  "Mo Salah's training sessions cause time to slow down.",
+  "In a game of tag, Mo Salah is always 'it'.",
+  "Mo Salah's presence turns ordinary matches into epic sagas.",
+  "Mo Salah's footsteps create seismic waves.",
+  "When Mo Salah smiles, defenders lose their will to fight.",
+  "Even the referee checks his notes before awarding a penalty against him.",
+  "Mo Salah once scored a hat-trick with a single kick.",
+  "Legends say that even the ball fears Mo Salah's touch.",
+  "Mo Salah's celebrations cause stadiums to erupt in awe.",
+  "Defenders watch his moves like it's a masterclass in physics.",
+  "When Mo Salah trains, gravity gets a performance review.",
+  "His passes travel faster than the speed of light.",
+  "Mo Salah's jersey is stitched with threads of destiny.",
+  "Even the most seasoned goalkeepers bow down in his presence.",
+  "Mo Salah’s workouts are so intense, they set the gym on fire.",
+  "The soccer gods themselves whisper his name in admiration.",
+  "Mo Salah doesn't need a coach; the game learns from him.",
+  "When Mo Salah plays, legends are born on the pitch."
+];
+
+
+    // Get references to DOM elements.
+    const generateBtn = document.getElementById("generateBtn");
+    const firstNameInput = document.getElementById("firstName");
+    const spinner = document.getElementById("spinner");
+    const countdownDiv = document.getElementById("countdown");
+    const resultDiv = document.getElementById("result");
+    const mohImage = document.getElementById("mohImage");
+
+    generateBtn.addEventListener("click", function(){
+      const firstName = firstNameInput.value.trim();
+      if (firstName === "") {
+        alert("Please enter your first name!");
+        return;
+      }
+      
+      // Reset previous outputs.
+      resultDiv.innerHTML = "";
+      spinner.style.display = "block";
+      countdownDiv.innerHTML = "";
+      mohImage.style.display = "none";
+      
+      let seconds = 9;
+      // Display the initial countdown with a random fact.
+      let randomFact = facts[Math.floor(Math.random() * facts.length)];
+      countdownDiv.innerHTML = seconds + " seconds left. " + randomFact;
+      
+      const interval = setInterval(function(){
+        seconds--;
+        // Update display only at the 6 and 3 second marks with a random fact.
+        if (seconds > 0 && seconds % 3 === 0) {
+          randomFact = facts[Math.floor(Math.random() * facts.length)];
+          countdownDiv.innerHTML = seconds + " seconds left. " + randomFact;
+        }
+        if (seconds <= 0) {
+          clearInterval(interval);
+          spinner.style.display = "none";
+          countdownDiv.innerHTML = "Done!";
+          resultDiv.innerHTML = "Your Mo Salah name is: <br/><h1>" + firstName + " " + fixedSurname + "<h1><br/>";
+          // Display the Mo Salah lookalike image.
+          mohImage.style.display = "block";
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
